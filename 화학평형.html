@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화학 평형 · 2NO₂ ⇌ N₂O₄</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  chtml: { scale: 1.05 }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{
+  --paper:#f4efe5;
+  --paper-2:#fbf8f1;
+  --ink:#2a241e;
+  --ink-soft:#5f574c;
+  --line:#e0d7c6;
+  --no2:#b3541e;
+  --no2-deep:#8a3d12;
+  --n2o4:#2e6f7e;
+  --n2o4-deep:#1f5460;
+  --gold:#c79a3e;
+  --shadow:rgba(60,45,25,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard",system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(199,154,62,.07), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(46,111,126,.06), transparent 42%);
+}
+.serif{font-family:"Noto Serif KR",serif;}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+section{padding:54px 0;border-bottom:1px solid var(--line)}
+section:last-child{border-bottom:none}
+header.hero{padding:64px 0 48px;text-align:center;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+.kicker{font-size:.82rem;letter-spacing:.32em;text-transform:uppercase;color:var(--no2);font-weight:700;margin-bottom:18px;}
+header.hero h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(2rem,6vw,3.4rem);line-height:1.2;letter-spacing:-.01em;}
+.rxn-hero{margin:26px auto 6px;font-size:clamp(1.3rem,4.5vw,2rem);font-weight:700;display:flex;align-items:center;justify-content:center;gap:.5em;flex-wrap:wrap;}
+.tag-no2{color:var(--no2)} .tag-n2o4{color:var(--n2o4)}
+.eqarrow{color:var(--ink-soft);font-weight:400}
+.sub{color:var(--ink-soft);max-width:560px;margin:14px auto 0;font-size:1.02rem}
+.sec-num{display:inline-block;font-family:"Noto Serif KR",serif;font-weight:900;font-size:.95rem;color:var(--gold);letter-spacing:.05em;margin-bottom:6px;}
+h2{font-family:"Noto Serif KR",serif;font-weight:700;font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.01em;margin-bottom:18px;line-height:1.3}
+h3{font-weight:700;font-size:1.12rem;margin:26px 0 8px;color:var(--ink)}
+p{margin:0 0 14px;color:var(--ink-soft)}
+p strong,li strong{color:var(--ink);font-weight:700}
+.lead{font-size:1.08rem;color:var(--ink)}
+ul.clean{list-style:none;margin:8px 0 14px}
+ul.clean li{position:relative;padding-left:22px;margin-bottom:8px;color:var(--ink-soft)}
+ul.clean li::before{content:"";position:absolute;left:2px;top:.7em;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.callout{background:var(--paper-2);border:1px solid var(--line);border-left:4px solid var(--no2);border-radius:12px;padding:18px 22px;margin:22px 0;box-shadow:0 6px 20px -14px var(--shadow);}
+.callout.q{border-left-color:var(--n2o4)}
+.callout .lbl{font-weight:800;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--no2);margin-bottom:6px;display:block}
+.callout.q .lbl{color:var(--n2o4)}
+.eqbox{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:16px 0;text-align:center;overflow-x:auto}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0 10px}
+.legend .chip{display:flex;align-items:center;gap:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:8px 16px 8px 8px;font-weight:600;font-size:.95rem}
+.legend .swatch{width:30px;height:30px;border-radius:50%;flex:none}
+.sim{background:var(--paper-2);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 18px 50px -30px var(--shadow);}
+.sim-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}
+@media(max-width:720px){.sim-grid{grid-template-columns:1fr}}
+.canvas-card{position:relative;border-radius:14px;overflow:hidden;background:#efe9dd;border:1px solid var(--line)}
+#simCanvas{display:block;width:100%;height:auto}
+.color-tag{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.82);backdrop-filter:blur(4px);border-radius:8px;padding:5px 11px;font-size:.8rem;font-weight:700;color:var(--ink);border:1px solid var(--line)}
+.panel{display:flex;flex-direction:column;gap:16px}
+.ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:.95rem;margin-bottom:6px}
+.ctrl label .val{font-family:"Noto Serif KR",serif;color:var(--no2);font-weight:700}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--n2o4),var(--gold),var(--no2));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--ink);cursor:pointer;box-shadow:0 2px 6px var(--shadow)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--ink);cursor:pointer}
+.range-scale{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-soft);margin-top:3px}
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ro{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ro .name{font-size:.74rem;color:var(--ink-soft);font-weight:600;letter-spacing:.02em}
+.ro .num{font-family:"Noto Serif KR",serif;font-weight:700;font-size:1.35rem;line-height:1.2;margin-top:2px}
+.ro.no2 .num{color:var(--no2)} .ro.n2o4 .num{color:var(--n2o4)}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+button.btn{font-family:inherit;font-weight:700;font-size:.9rem;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:10px;padding:10px 16px;cursor:pointer;transition:transform .08s ease,opacity .15s}
+button.btn.ghost{background:transparent;color:var(--ink)}
+button.btn:hover{opacity:.88} button.btn:active{transform:translateY(1px)}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+button.pill{font-family:inherit;font-size:.82rem;font-weight:700;border-radius:999px;cursor:pointer;padding:7px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+button.pill:hover{border-color:var(--ink)}
+.graph-card{margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 8px}
+.graph-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px}
+.graph-head .t{font-weight:700;font-size:.95rem}
+.glegend{display:flex;gap:14px;font-size:.82rem;font-weight:600}
+.glegend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+#graphCanvas{display:block;width:100%;height:auto}
+footer{padding:40px 0 60px;text-align:center;color:var(--ink-soft);font-size:.86rem}
+.eq-mini{font-family:"Noto Serif KR",serif}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">화학 · 반응의 평형</div>
+    <h1 class="serif">눈에 보이는 화학 평형</h1>
+    <div class="rxn-hero">
+      <span class="tag-no2">2 NO₂</span><span class="eqarrow">⇌</span><span class="tag-n2o4">N₂O₄</span>
+    </div>
+    <p class="sub">갈색 기체와 무색 기체 사이의 줄다리기.<br>온도와 부피를 바꾸며 평형이 어떻게 이동하는지 직접 관찰해 봅시다.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <span class="sec-num">01</span>
+    <h2>화학 평형이란 무엇일까?</h2>
+    <p class="lead">반응이 멈춘 것처럼 보이지만, 사실은 멈춘 것이 아닙니다.</p>
+    <p>가역 반응에서 <strong>정반응</strong>(왼쪽 → 오른쪽)과 <strong>역반응</strong>(오른쪽 → 왼쪽)이 동시에 일어납니다.
+      처음에는 정반응이 빠르지만, 생성물이 쌓이면서 역반응도 점점 빨라집니다.
+      마침내 <strong>두 반응의 속도가 같아지는 순간</strong>, 겉보기 농도가 더 이상 변하지 않게 됩니다.
+      이 상태를 <strong>화학 평형(동적 평형)</strong>이라고 합니다.</p>
+    <div class="callout">
+      <span class="lbl">핵심</span>
+      평형은 "정지"가 아니라 <strong>속도의 균형</strong>입니다. 분자들은 끊임없이 결합하고 다시 떨어지지만,
+      그 양이 서로 상쇄되어 전체 농도가 일정하게 유지됩니다.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-num">02</span>
+    <h2>이 반응: 2NO₂ ⇌ N₂O₄</h2>
+    <p>이산화 질소(NO₂)는 <strong style="color:var(--no2)">짙은 적갈색</strong> 기체이고,
+      두 분자가 결합한 사산화 이질소(N₂O₄)는 <strong style="color:var(--n2o4)">무색</strong> 기체입니다.
+      그래서 이 평형은 색의 진하기만 봐도 어느 쪽으로 치우쳐 있는지 알 수 있습니다.</p>
+
+    <div class="legend">
+      <div class="chip"><span class="swatch" style="background:radial-gradient(circle at 35% 30%,#5a97d6,#1d4e80)"></span>질소(N) 원자</div>
+      <div class="chip"><span class="swatch" style="background:radial-gradient(circle at 35% 30%,#e2685a,#7d2018)"></span>산소(O) 원자</div>
+    </div>
+    <p style="font-size:.96rem">두 분자는 <strong>같은 원자</strong>로 이루어져 있습니다. NO₂는 단위 하나,
+      N₂O₄는 두 NO₂가 <strong>N–N 결합</strong>으로 이어진 모습이죠. 그래서 시뮬레이션에서 분자가
+      <strong>붙으면</strong> N₂O₄, <strong>떨어지면</strong> NO₂가 됩니다. 기체의
+      <strong style="color:var(--no2)">갈색</strong>은 NO₂가 빛을 흡수해 나타나는 <em>전체 기체의 색</em>이라서,
+      NO₂가 많을수록 배경이 진해집니다.</p>
+
+    <p>평형 반응식과 평형 상수는 다음과 같이 씁니다.</p>
+    <div class="eqbox">\[ 2\,\mathrm{NO_2}(g)\ \rightleftharpoons\ \mathrm{N_2O_4}(g) \qquad \Delta H^\circ = -57\ \mathrm{kJ/mol} \]</div>
+    <div class="eqbox">\[ K_c=\dfrac{[\mathrm{N_2O_4}]}{[\mathrm{NO_2}]^{2}} \]</div>
+    <p>정반응이 <strong>발열 반응</strong>(열을 내놓음)이라는 점, 그리고 분자 수가
+      <strong>2개 → 1개</strong>로 줄어든다는 점이 평형 이동을 이해하는 두 개의 열쇠입니다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-num">03</span>
+    <h2>직접 해 보는 평형 시뮬레이션</h2>
+    <p>아래 용기 안에서 분자들이 실제로 <strong>결합하고 분해</strong>됩니다. NO₂ 두 개가 가까워지면 붙어서 N₂O₄가 되고,
+      N₂O₄는 다시 둘로 떨어집니다. <strong>온도</strong>와 <strong>부피</strong> 슬라이더를 움직이면 기체의
+      <strong>색</strong>과 아래 <strong>그래프</strong>가 함께 반응합니다.</p>
+
+    <div class="sim">
+      <div class="sim-grid">
+        <div class="canvas-card">
+          <div class="color-tag" id="colorTag">기체 색: —</div>
+          <canvas id="simCanvas" width="520" height="420"></canvas>
+        </div>
+        <div class="panel">
+          <div class="ctrl">
+            <label>온도 <span class="val"><span id="tVal">298</span> K</span></label>
+            <input type="range" id="temp" min="270" max="360" value="298" step="1">
+            <div class="range-scale"><span>270 K (차가움)</span><span>360 K (뜨거움)</span></div>
+          </div>
+          <div class="ctrl">
+            <label>부피 <span class="val"><span id="vVal">1.00</span> ×</span></label>
+            <input type="range" id="vol" min="50" max="180" value="100" step="1">
+            <div class="range-scale"><span>압축 ←</span><span>→ 팽창</span></div>
+          </div>
+          <div class="readouts">
+            <div class="ro no2"><div class="name">NO₂ 분자 수</div><div class="num" id="roNO2">0</div></div>
+            <div class="ro n2o4"><div class="name">N₂O₄ 분자 수</div><div class="num" id="roN2O4">0</div></div>
+            <div class="ro"><div class="name">정반응 속도</div><div class="num" id="roFwd" style="color:var(--no2-deep)">0</div></div>
+            <div class="ro"><div class="name">역반응 속도</div><div class="num" id="roRev" style="color:var(--n2o4-deep)">0</div></div>
+          </div>
+          <div class="presets">
+            <button class="pill" data-t="278">❄️ 얼음물 (5°C)</button>
+            <button class="pill" data-t="298">실온 (25°C)</button>
+            <button class="pill" data-t="343">♨️ 뜨거운 물 (70°C)</button>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="playBtn">⏸ 일시정지</button>
+            <button class="btn ghost" id="resetBtn">↺ 초기화</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="graph-card">
+        <div class="graph-head">
+          <span class="t">분자 수의 변화 (시간에 따른 평형 도달)</span>
+          <span class="glegend">
+            <span style="color:var(--no2)"><i style="background:var(--no2)"></i>NO₂</span>
+            <span style="color:var(--n2o4)"><i style="background:var(--n2o4)"></i>N₂O₄</span>
+          </span>
+        </div>
+        <canvas id="graphCanvas" width="780" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="callout q" style="margin-top:24px">
+      <span class="lbl">관찰 포인트</span>
+      온도를 올리면 갈색 NO₂가 늘어날까요, 줄어들까요? 부피를 줄이면(압축) 색은 어떻게 변할까요?
+      분자들이 붙고 떨어지는 모습과, 정·역반응 속도가 다시 같아질 때까지 그래프를 지켜보세요.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-num">04</span>
+    <h2>르샤틀리에 원리로 설명하기</h2>
+    <p class="lead">평형에 변화를 주면, 계는 그 변화를 <strong>줄이는 방향</strong>으로 이동합니다.</p>
+    <h3>① 온도를 올리면 — 갈색이 진해진다</h3>
+    <p>정반응이 발열 반응이므로 열은 <em>생성물 쪽</em>에 있는 것과 같습니다.
+      \( 2\mathrm{NO_2} \rightleftharpoons \mathrm{N_2O_4} + \text{열} \).
+      온도를 높여 열을 더하면, 계는 열을 소모하는 <strong>역반응(NO₂ 생성) 쪽</strong>으로 이동합니다.
+      그래서 <strong style="color:var(--no2)">갈색이 진해집니다</strong>.</p>
+    <h3>② 부피를 줄이면(압축) — 색이 옅어진다</h3>
+    <p>압력이 높아지면 계는 기체 분자 수가 <strong>적은 쪽</strong>으로 이동해 압력을 낮추려 합니다.
+      왼쪽은 2분자, 오른쪽은 1분자이므로 <strong style="color:var(--n2o4)">N₂O₄ 쪽</strong>으로 이동하고,
+      색이 옅어집니다. (단, 압축 직후 순간적으로는 농도가 짙어져 색이 진해 보이는 점도 흥미로운 토론거리입니다.)</p>
+    <div class="callout">
+      <span class="lbl">한눈에</span>
+      <ul class="clean" style="margin-bottom:0">
+        <li><strong>가열 →</strong> NO₂ 증가 → 갈색 진해짐 (역반응 우세)</li>
+        <li><strong>냉각 →</strong> N₂O₄ 증가 → 색 옅어짐 (정반응 우세)</li>
+        <li><strong>압축 →</strong> N₂O₄ 증가 (분자 수 적은 쪽)</li>
+        <li><strong>팽창 →</strong> NO₂ 증가 (분자 수 많은 쪽)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-num">05</span>
+    <h2>정리</h2>
+    <ul class="clean">
+      <li>화학 평형은 정반응과 역반응의 <strong>속도가 같아진</strong> 동적 상태다.</li>
+      <li>NO₂(갈색)와 N₂O₄(무색)의 평형은 <strong>색으로 이동을 확인</strong>할 수 있다.</li>
+      <li>온도·부피 등 조건을 바꾸면 <strong>르샤틀리에 원리</strong>에 따라 평형이 이동한다.</li>
+      <li>평형 상수 \(K_c\)는 온도가 바뀔 때만 변한다(부피 변화로는 \(K_c\)가 변하지 않는다).</li>
+    </ul>
+    <div class="callout q">
+      <span class="lbl">생각해 보기</span>
+      부피를 바꿔도 \(K_c\) 값 자체는 변하지 않는데, 어째서 색(평형 위치)은 변할까요?
+      \(K_c\) 식과 농도의 정의를 이용해 친구에게 설명해 보세요.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="eq-mini">2 NO₂ ⇌ N₂O₄</span> · 화학 평형 학습 자료<br>
+    슬라이더와 그래프로 배우는 인터랙티브 교재
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   2NO2 ⇌ N2O4  단위(unit) 기반 평형 시뮬레이션
+   - NO2 = 단위 1개(자유), N2O4 = 단위 2개가 N-N 결합
+   - 모든 원자 색 동일. 갈색은 기체 전체(NO2 농도) 색으로만 표현
+   - 결합: 두 NO2가 다가가 붙음 / 분해: N2O4가 둘로 떨어져 나감
+   ========================================================= */
+(function(){
+  const R=8.314, Ea_f=3000, Ea_r=60000, Af=0.1049, Ar=3.30e10;
+  const Vbase=1.0, TOTAL_N=60, SPEED=0.6;
+  const BOND=13;        // N-N 결합 길이(px)
+  const R_FREE=9;       // NO2 충돌 반지름(더 작게)
+  const R_PAIR=13;      // N2O4 충돌 반지름
+  const M_FREE=1, M_PAIR=2;  // 상대 질량 (N2O4가 2배 무거움)
+  const VMAX=3.2;       // 속도 상한(안정화)
+
+  // 원자 색 (NO2/N2O4 공통)
+  const N_COL='#3b7ec4', N_EDGE='#1d4e80';
+  const O_COL='#c84b3a', O_EDGE='#7d2018';
+
+  let T=298, Vrel=1.0, running=true;
+  let units=[];
+  let fwdRate=0, revRate=0, pendingBonds=0;
+  let history=[]; const HIST_MAX=320;
+
+  const sim=document.getElementById('simCanvas'), sctx=sim.getContext('2d');
+  const gph=document.getElementById('graphCanvas'), gctx=gph.getContext('2d');
+  let SW,SH,GW,GH,dpr;
+
+  function fit(canvas,ctx){
+    dpr=window.devicePixelRatio||1;
+    const r=canvas.getBoundingClientRect();
+    canvas.width=Math.max(1,Math.round(r.width*dpr));
+    canvas.height=Math.max(1,Math.round((canvas===sim? r.width*0.8 : r.width*0.26)*dpr));
+    canvas.style.height=(canvas.height/dpr)+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function resize(){
+    fit(sim,sctx); SW=sim.width/dpr; SH=sim.height/dpr;
+    fit(gph,gctx); GW=gph.width/dpr; GH=gph.height/dpr;
+    for(const u of units){u.x=Math.min(Math.max(u.x,30),SW-30);u.y=Math.min(Math.max(u.y,30),SH-30);}
+  }
+  window.addEventListener('resize',resize);
+
+  function rand(a,b){return a+Math.random()*(b-a);}
+  function mkUnit(x,y){return {
+    x:x==null?rand(46,SW-46):x, y:y==null?rand(46,SH-46):y,
+    vx:rand(-1,1), vy:rand(-1,1), ang:rand(0,6.28), va:rand(-.04,.04),
+    state:'free', partner:null, role:0, prog:0, gAng:0 };}
+
+  function init(){ units=[]; for(let i=0;i<TOTAL_N;i++) units.push(mkUnit()); history=[]; fwdRate=revRate=0; pendingBonds=0; }
+
+  function rateConstants(temp){ return {kf:Af*Math.exp(-Ea_f/(R*temp)), kr:Ar*Math.exp(-Ea_r/(R*temp))}; }
+  function freeCount(){let n=0;for(const u of units)if(u.state==='free')n++;return n;}
+
+  function step(dt){
+    const m=R_FREE+6, gm=BOND+R_PAIR+2;
+
+    // 자유 분자 이동
+    for(const u of units){
+      if(u.state==='free'){
+        u.x+=u.vx; u.y+=u.vy; u.ang+=u.va;
+        if(u.x<m){u.x=m;u.vx*=-1;} if(u.x>SW-m){u.x=SW-m;u.vx*=-1;}
+        if(u.y<m){u.y=m;u.vy*=-1;} if(u.y>SH-m){u.y=SH-m;u.vy*=-1;}
+      }
+    }
+    // 결합 분자(N2O4) 이동: 리더 이동 + 짝 배치
+    for(const u of units){
+      if(u.state==='bonded'&&u.role===0){
+        u.x+=u.vx; u.y+=u.vy; u.gAng+=u.va;
+        if(u.x<gm){u.x=gm;u.vx*=-1;} if(u.x>SW-gm){u.x=SW-gm;u.vx*=-1;}
+        if(u.y<gm){u.y=gm;u.vy*=-1;} if(u.y>SH-gm){u.y=SH-gm;u.vy*=-1;}
+        const p=u.partner; p.x=u.x+Math.cos(u.gAng)*BOND; p.y=u.y+Math.sin(u.gAng)*BOND; p.gAng=u.gAng;
+      }
+    }
+
+    // 반응 속도 계산
+    const Vol=Vbase*Vrel;
+    const nf=freeCount();
+    let nb=0; for(const u of units) if(u.state==='bonded'&&u.role===0) nb++;
+    const {kf,kr}=rateConstants(T);
+    const expFwd=kf*nf*nf/Vol*dt*SPEED;   // 정반응: 충돌 시 소비
+    const expRev=kr*nb*dt*SPEED;          // 역반응: 즉시 분해
+    fwdRate+=(expFwd/dt-fwdRate)*0.06;
+    revRate+=(expRev/dt-revRate)*0.06;
+    pendingBonds+=expFwd;                  // 예약된 결합(실제 충돌에서 성사)
+    const cap=nf/2; if(pendingBonds>cap) pendingBonds=cap;
+
+    // ---- 분자 간 탄성 충돌 (+ 충돌 순간 결합) ----
+    const bodies=[];
+    for(const u of units){
+      if(u.state==='free') bodies.push({u,cx:u.x,cy:u.y,r:R_FREE,m:M_FREE,free:true,dead:false});
+      else if(u.state==='bonded'&&u.role===0){
+        const p=u.partner;
+        bodies.push({u,cx:(u.x+p.x)/2,cy:(u.y+p.y)/2,r:R_PAIR,m:M_PAIR,free:false,dead:false});
+      }
+    }
+    for(let i=0;i<bodies.length;i++){
+      const A=bodies[i]; if(A.dead) continue;
+      for(let j=i+1;j<bodies.length;j++){
+        const B=bodies[j]; if(B.dead) continue;
+        let dx=B.cx-A.cx, dy=B.cy-A.cy, dist=Math.hypot(dx,dy);
+        const min=A.r+B.r;
+        if(dist===0){ dx=Math.random()-0.5; dy=Math.random()-0.5; dist=Math.hypot(dx,dy)||1; }
+        if(dist>=min) continue;
+        const nx=dx/dist, ny=dy/dist;
+
+        // 두 자유 NO2가 부딪히고 예약된 결합이 있으면 → 그 자리에서 자연스럽게 결합
+        if(A.free && B.free && pendingBonds>=1){
+          pendingBonds-=1;
+          const ga=Math.atan2(dy,dx), L=A.u, F=B.u;
+          L.state='bonded'; L.role=0; L.partner=F; L.gAng=ga; L.va=rand(-.03,.03);
+          F.state='bonded'; F.role=1; F.partner=L; F.gAng=ga;
+          // 결합 = 비탄성 포획: 운동량 보존(동일 질량 → 평균 속도)
+          L.vx=(L.vx+F.vx)/2; L.vy=(L.vy+F.vy)/2;
+          F.x=L.x+Math.cos(ga)*BOND; F.y=L.y+Math.sin(ga)*BOND;
+          A.dead=true; B.dead=true; break;
+        }
+
+        // 그 외: 완전 탄성 충돌(e=1)
+        const vn=(B.u.vx-A.u.vx)*nx+(B.u.vy-A.u.vy)*ny;
+        if(vn<0){
+          const imp=-(2*vn)/(1/A.m+1/B.m);
+          A.u.vx-=imp*nx/A.m; A.u.vy-=imp*ny/A.m;
+          B.u.vx+=imp*nx/B.m; B.u.vy+=imp*ny/B.m;
+        }
+        const overlap=min-dist, totInv=1/A.m+1/B.m;
+        const sa=overlap*(1/A.m)/totInv, sb=overlap*(1/B.m)/totInv;
+        A.u.x-=nx*sa; A.u.y-=ny*sa; A.cx-=nx*sa; A.cy-=ny*sa;
+        B.u.x+=nx*sb; B.u.y+=ny*sb; B.cx+=nx*sb; B.cy+=ny*sb;
+      }
+    }
+
+    // 속도 상한 + 벽 클램프 + 결합쌍 짝 위치 재배치
+    for(const u of units){
+      const s=Math.hypot(u.vx,u.vy); if(s>VMAX){ u.vx*=VMAX/s; u.vy*=VMAX/s; }
+      if(u.state==='free'){
+        if(u.x<m)u.x=m; if(u.x>SW-m)u.x=SW-m; if(u.y<m)u.y=m; if(u.y>SH-m)u.y=SH-m;
+      } else if(u.state==='bonded'&&u.role===0){
+        if(u.x<gm)u.x=gm; if(u.x>SW-gm)u.x=SW-gm; if(u.y<gm)u.y=gm; if(u.y>SH-gm)u.y=SH-gm;
+        const p=u.partner; p.x=u.x+Math.cos(u.gAng)*BOND; p.y=u.y+Math.sin(u.gAng)*BOND;
+      }
+    }
+
+    // 역반응: N2O4 하나를 둘로 떨어뜨림(자연스럽게 튕겨 나감)
+    let doR=Math.floor(expRev)+(Math.random()<(expRev%1)?1:0);
+    for(let i=0;i<doR;i++){
+      const ld=units.filter(u=>u.state==='bonded'&&u.role===0);
+      if(!ld.length) break;
+      const L=ld[Math.floor(Math.random()*ld.length)], F=L.partner;
+      const ax=Math.cos(L.gAng), ay=Math.sin(L.gAng), kick=1.5;
+      L.state='free'; F.state='free'; L.partner=F.partner=null; L.role=F.role=0;
+      L.vx-=ax*kick; L.vy-=ay*kick; F.vx+=ax*kick; F.vy+=ay*kick;
+      L.ang=rand(0,6.28); F.ang=rand(0,6.28); L.va=rand(-.05,.05); F.va=rand(-.05,.05);
+    }
+
+    const no2=freeCount(), n2o4=(TOTAL_N-no2)/2;
+    history.push({no2,n2o4}); if(history.length>HIST_MAX) history.shift();
+  }
+
+  // ----- 원자/분자 그리기 -----
+  function lighten(hex){
+    const n=parseInt(hex.slice(1),16); let r=(n>>16)+55,g=((n>>8)&255)+55,b=(n&255)+55;
+    return `rgb(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)})`;
+  }
+  function atom(x,y,r,col,edge){
+    const c=sctx, g=c.createRadialGradient(x-r*0.35,y-r*0.35,r*0.2,x,y,r);
+    g.addColorStop(0,lighten(col)); g.addColorStop(1,col);
+    c.fillStyle=g; c.beginPath(); c.arc(x,y,r,0,7); c.fill();
+    c.strokeStyle=edge; c.lineWidth=1; c.stroke();
+  }
+  function drawUnit(x,y,facing){
+    const c=sctx, d=8, half=(134*Math.PI/180)/2;
+    const a1=facing-half, a2=facing+half;
+    const o1x=x+Math.cos(a1)*d, o1y=y+Math.sin(a1)*d;
+    const o2x=x+Math.cos(a2)*d, o2y=y+Math.sin(a2)*d;
+    c.strokeStyle='rgba(70,50,35,.45)'; c.lineWidth=1.8;
+    c.beginPath(); c.moveTo(o1x,o1y); c.lineTo(x,y); c.lineTo(o2x,o2y); c.stroke();
+    atom(o1x,o1y,3.6,O_COL,O_EDGE); atom(o2x,o2y,3.6,O_COL,O_EDGE);
+    atom(x,y,4.8,N_COL,N_EDGE);
+  }
+  function drawNN(x1,y1,x2,y2){
+    const c=sctx; c.strokeStyle='rgba(40,80,130,.55)'; c.lineWidth=2.4;
+    c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+  }
+  function roundRect(c,x,y,w,h,r){
+    c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r);
+    c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath();
+  }
+
+  function drawSim(){
+    const c=sctx; c.clearRect(0,0,SW,SH);
+    c.fillStyle='#efe9dd'; roundRect(c,8,8,SW-16,SH-16,16); c.fill();
+
+    // 기체 갈색 오버레이 (NO2 농도)
+    const no2=freeCount();
+    const alpha=Math.min(0.6,(no2/TOTAL_N)*0.85);
+    c.save(); roundRect(c,8,8,SW-16,SH-16,16); c.clip();
+    const grd=c.createLinearGradient(0,0,SW,SH);
+    grd.addColorStop(0,`rgba(150,68,20,${alpha})`);
+    grd.addColorStop(1,`rgba(120,48,12,${alpha*0.85})`);
+    c.fillStyle=grd; c.fillRect(0,0,SW,SH); c.restore();
+
+    c.strokeStyle='rgba(60,45,25,.25)'; c.lineWidth=2; roundRect(c,8,8,SW-16,SH-16,16); c.stroke();
+
+    // 분자
+    for(const u of units){
+      if(u.state==='free'){ drawUnit(u.x,u.y,u.ang); }
+      else if(u.role===0){ // 결합쌍(N2O4)의 리더가 한 쌍 전체를 그림
+        const p=u.partner;
+        drawNN(u.x,u.y,p.x,p.y);
+        const a=Math.atan2(p.y-u.y,p.x-u.x);
+        drawUnit(u.x,u.y,a+Math.PI); drawUnit(p.x,p.y,a);
+      }
+    }
+
+    // 색 라벨
+    let label='무색에 가까움', lc='#2e6f7e';
+    if(alpha>0.44){label='짙은 적갈색'; lc='#8a3d12';}
+    else if(alpha>0.30){label='갈색'; lc='#b3541e';}
+    else if(alpha>0.15){label='옅은 갈색'; lc='#c0743a';}
+    const tag=document.getElementById('colorTag');
+    tag.textContent='기체 색: '+label; tag.style.color=lc;
+  }
+
+  function drawGraph(){
+    const c=gctx; c.clearRect(0,0,GW,GH);
+    const padL=34,padR=10,padT=10,padB=18, w=GW-padL-padR, h=GH-padT-padB;
+    c.strokeStyle='#d8cfbe'; c.lineWidth=1;
+    c.beginPath(); c.moveTo(padL,padT); c.lineTo(padL,padT+h); c.lineTo(padL+w,padT+h); c.stroke();
+    c.font='10px Pretendard'; c.fillStyle='#8b8276'; c.textAlign='right';
+    for(let v=0;v<=TOTAL_N;v+=20){
+      const y=padT+h-(v/TOTAL_N)*h; c.fillText(v,padL-6,y+3);
+      c.strokeStyle='rgba(216,207,190,.6)'; c.beginPath(); c.moveTo(padL,y); c.lineTo(padL+w,y); c.stroke();
+    }
+    if(history.length<2) return;
+    const n=history.length;
+    const line=(key,color)=>{
+      c.strokeStyle=color; c.lineWidth=2.4; c.beginPath();
+      for(let i=0;i<n;i++){
+        const x=padL+(i/(HIST_MAX-1))*w, y=padT+h-(history[i][key]/TOTAL_N)*h;
+        i?c.lineTo(x,y):c.moveTo(x,y);
+      }
+      c.stroke();
+    };
+    line('no2','#b3541e'); line('n2o4','#2e6f7e');
+  }
+
+  let last=performance.now();
+  function loop(now){
+    const dt=Math.min(0.05,(now-last)/1000); last=now;
+    if(running) step(dt);
+    drawSim(); drawGraph(); updateReadouts();
+    requestAnimationFrame(loop);
+  }
+  function updateReadouts(){
+    const no2=freeCount();
+    document.getElementById('roNO2').textContent=no2;
+    document.getElementById('roN2O4').textContent=(TOTAL_N-no2)/2;
+    document.getElementById('roFwd').textContent=fwdRate.toFixed(1);
+    document.getElementById('roRev').textContent=revRate.toFixed(1);
+  }
+
+  const tEl=document.getElementById('temp'), vEl=document.getElementById('vol');
+  tEl.addEventListener('input',()=>{ T=+tEl.value; document.getElementById('tVal').textContent=T; });
+  vEl.addEventListener('input',()=>{ Vrel=+vEl.value/100; document.getElementById('vVal').textContent=Vrel.toFixed(2); });
+  document.querySelectorAll('.pill').forEach(b=>b.addEventListener('click',()=>{
+    T=+b.dataset.t; tEl.value=T; document.getElementById('tVal').textContent=T;
+  }));
+  const playBtn=document.getElementById('playBtn');
+  playBtn.addEventListener('click',()=>{ running=!running; playBtn.textContent=running?'⏸ 일시정지':'▶ 재생'; });
+  document.getElementById('resetBtn').addEventListener('click',()=>{
+    T=298; Vrel=1.0; tEl.value=298; vEl.value=100;
+    document.getElementById('tVal').textContent=298; document.getElementById('vVal').textContent='1.00'; init();
+  });
+
+  resize(); init(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
